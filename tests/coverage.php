@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Test coverage class
+ *
  * @package     local_cohortrole
  * @copyright   2019 Paul Holden (paulh@moodle.com)
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -22,13 +24,6 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-/**
- * Test coverage class
- *
- * @package     local_cohortrole
- * @copyright   2019 Paul Holden (paulh@moodle.com)
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 return new class extends phpunit_coverage_info {
     /** @var array The list of folders relative to the plugin root to whitelist in coverage generation. */
     protected $whitelistfolders = [
