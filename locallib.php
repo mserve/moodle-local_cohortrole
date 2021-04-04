@@ -126,7 +126,7 @@ function local_cohortrole_get_context(int $categoryid) {
         return context_coursecat::instance($categoryid);
     }
 
-    return $context = context_system::instance();
+    return context_system::instance();
 }
 
 /**
@@ -135,13 +135,14 @@ function local_cohortrole_get_context(int $categoryid) {
  * @param $mode
  * @return string
  * @throws coding_exception
- * @throws dml_exception
  */
 function local_cohortrole_get_context_name($mode): string {
-    $context = local_cohortrole_get_context($mode);
-    $contextname = strtok($context->get_context_name(), ':');
-
-    return $contextname;
+    switch ($mode) {
+        case LOCAL_COHORTROLE_MODE_CATEGORY:
+            return \context_coursecat::get_level_name();
+        default:
+            return \context_system::get_level_name();
+    }
 }
 
 /**
