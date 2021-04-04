@@ -41,7 +41,7 @@ class local_cohortrole_observers_testcase extends advanced_testcase {
     public static function setUpBeforeClass(): void {
         global $CFG;
 
-        require_once("{$CFG->dirroot}/cohort/lib.php");
+        require_once("{$CFG->dirroot}/cohort/lib.php");        
         require_once("{$CFG->dirroot}/local/cohortrole/locallib.php");
     }
 
@@ -173,6 +173,22 @@ class local_cohortrole_observers_testcase extends advanced_testcase {
 
         // Ensure plugin tables are cleaned up.
         $exists = $this->persistent->record_exists_select('roleid = ?', [$this->persistent->get('roleid')]);
+        $this->assertFalse($exists);
+    }
+
+    /**
+     * Tests course_category_deleted event observer
+     *
+     * @return void
+     */
+    public function test_course_category_deleted() {
+        // Get category object...
+        $coursecat  = \core_course_category::get($this->persistent->get('categoryid'));
+        // ...and fully delete it
+        $coursecat->delete_full();
+
+        // Ensure plugin tables are cleaned up.
+        $exists = $this->persistent->record_exists_select('categoryid = ?', [$this->persistent->get('categoryid')]);
         $this->assertFalse($exists);
     }
 }
