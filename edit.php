@@ -75,7 +75,7 @@ if ($mform->is_cancelled()) {
 $PAGE->navbar->add(get_string('add'));
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('heading_add', 'local_cohortrole', local_cohortrole_get_context_name($mode)));
+echo $OUTPUT->heading(get_string('heading_add', 'local_cohortrole', local_cohortrole_get_contextlevel_name($mode)));
 
 $mform->display();
 
