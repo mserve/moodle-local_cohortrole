@@ -45,7 +45,7 @@ class edit extends \core\form\persistent {
         $mform = $this->_form;
 
         // Mode field. Keep it as constant!
-        $mode = $this->_customdata['mode'];        
+        $mode = $this->_customdata['mode'];
         $mform->addElement('hidden', 'mode');
         $mform->setType('mode', PARAM_INT);
         $mform->setConstant('mode', $mode);
@@ -70,7 +70,7 @@ class edit extends \core\form\persistent {
         } else {
             $mform->addElement('select', 'categoryid', get_string('category', 'local_cohortrole'), self::get_categories());
             $mform->setType('categoryid', PARAM_INT);
-            $mform->addHelpButton('categoryid', 'category', 'local_cohortrole');            
+            $mform->addHelpButton('categoryid', 'category', 'local_cohortrole');
         }
 
         $this->add_action_buttons();
@@ -85,9 +85,9 @@ class edit extends \core\form\persistent {
      * @return array
      */
     public function extra_validation($data, $files, array &$errors) {
-        
+
         // Get mode.
-        $mode = $this->_customdata['mode'];       
+        $mode = $this->_customdata['mode'];
 
         // Assume category ID 0 by default if mode is LOCAL_COHORTROLE_MODE_SYSTEM and not given.
         if ($mode == LOCAL_COHORTROLE_MODE_SYSTEM && !property_exists ($data, 'categoryid')) {

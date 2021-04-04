@@ -145,7 +145,9 @@ class summary_table extends \table_sql implements \renderable {
         $categories  = \core_course_category::make_categories_list();
 
         $url = new \moodle_url('/course/management.php', array('categoryid' => $persistent->get_category()->id));
-        return \html_writer::link($url, format_string($categories[$persistent->get_category()->id], true, \context_system::instance()));
+        return \html_writer::link($url,
+            format_string($categories[$persistent->get_category()->id],
+                true, \context_system::instance()));
     }
 
     /**
