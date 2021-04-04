@@ -130,13 +130,13 @@ function local_cohortrole_get_context(int $categoryid) {
 }
 
 /**
- * Returns the context name by the given mode.
+ * Returns the context level name by the given mode.
  *
  * @param $mode
  * @return string
  * @throws coding_exception
  */
-function local_cohortrole_get_context_name($mode): string {
+function local_cohortrole_get_contextlevel_name($mode): string {
     switch ($mode) {
         case LOCAL_COHORTROLE_MODE_CATEGORY:
             return \context_coursecat::get_level_name();
@@ -144,6 +144,24 @@ function local_cohortrole_get_context_name($mode): string {
             return \context_system::get_level_name();
     }
 }
+
+/**
+ * Returns the context level by the given mode.
+ *
+ * @param $mode
+ * @return int
+ * @throws coding_exception
+ */
+function local_cohortrole_get_contextlevel($mode): string {
+    switch ($mode) {
+        case LOCAL_COHORTROLE_MODE_CATEGORY:
+            return CONTEXT_COURSECAT;
+        default:
+            return CONTEXT_SYSTEM;
+    }
+}
+
+
 
 /**
  * Returns the buttons to launch the edit form by mode.
@@ -160,7 +178,7 @@ function local_cohortrole_render_add_buttons(): string {
 
     $modes = [LOCAL_COHORTROLE_MODE_SYSTEM, LOCAL_COHORTROLE_MODE_CATEGORY];
     foreach ($modes as $mode) {
-        $contextname = local_cohortrole_get_context_name($mode);
+        $contextname = local_cohortrole_get_contextlevel_name($mode);
 
         $output .= $OUTPUT->single_button(new moodle_url('/local/cohortrole/edit.php', ['mode' => $mode]),
             get_string('assignrolesin', 'core_role', $contextname), 'get');
