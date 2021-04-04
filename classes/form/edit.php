@@ -110,17 +110,14 @@ class edit extends \core\form\persistent {
     protected static function get_roles($modeid) {
         // Get context level for mode
         $contextlevel = local_cohortrole_get_contextlevel($modeid);
-        // Check if roles are requested on category level
+        // Check if roles are requested on category level.
         if ($contextlevel == CONTEXT_COURSECAT) {
-            // Get roles assignable to default category
+            // Get roles assignable to default category.
             $roles = get_assignable_roles(\context_coursecat::instance(\core_course_category::get_default()->id), ROLENAME_ALIAS);
         } else {
-            // Get roles assigneable to system context
+            // Get roles assigneable to system context.
             $roles = get_assignable_roles(\context_system::instance(), ROLENAME_ALIAS);
         }
-
-        $role_ids = get_roles_for_contextlevels($contextlevel);
-        // TODO: get the role names from IDs
 
         \core_collator::asort($roles, \core_collator::SORT_STRING);
 
