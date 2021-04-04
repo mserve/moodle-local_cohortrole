@@ -41,7 +41,7 @@ class local_cohortrole_observers_testcase extends advanced_testcase {
     public static function setUpBeforeClass(): void {
         global $CFG;
 
-        require_once("{$CFG->dirroot}/cohort/lib.php");        
+        require_once("{$CFG->dirroot}/cohort/lib.php");
         require_once("{$CFG->dirroot}/local/cohortrole/locallib.php");
     }
 
