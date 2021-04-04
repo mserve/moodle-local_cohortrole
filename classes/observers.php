@@ -107,26 +107,24 @@ class observers {
             }
         }
     }
-     /**
+    /**
      * Category deleted
      *
      * @param \core\event\course_category_deleted $event the event
      * @return void
      */
-    public static function course_category_deleted(\core\event\course_category_deleted $event) {        
+    public static function course_category_deleted(\core\event\course_category_deleted $event) {
         if (($event->contextlevel == CONTEXT_COURSECAT) || ($event->contextlevel == CONTEXT_SYSTEM)) {
             // For some reasons, there is no snapshot, the following is supposed to work but doesn't (in Moodle 3.9.5)
-            // $category = $event->get_record_snapshot('course_categories', $event->objectid);      
+            // $category = $event->get_record_snapshot('course_categories', $event->objectid);
             // $instances = persistent::get_records(['categoryid' => $category->id]);
-            // Workaround:
+            // Workaround is to use contextinstanceid property of $event.
 
             $instances = persistent::get_records(['categoryid' => $event->contextinstanceid]);
-                        
+
             foreach ($instances as $instance) {
                 $instance->delete();
             }
         }
     }
-
-     
 }
