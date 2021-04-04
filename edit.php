@@ -59,7 +59,7 @@ if ($delete) {
     die;
 }
 
-$mform = new \local_cohortrole\form\edit($editurl, ['persistent' => null, 'modeid' => $mode]);
+$mform = new \local_cohortrole\form\edit($editurl, ['persistent' => null, 'mode' => $mode]);
 
 if ($mform->is_cancelled()) {
     redirect($returnurl);
