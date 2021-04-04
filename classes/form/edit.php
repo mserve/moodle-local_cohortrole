@@ -108,7 +108,7 @@ class edit extends \core\form\persistent {
      * @return array
      */
     protected static function get_roles($modeid) {
-        // Get context level for mode
+        // Get context level for mode.
         $contextlevel = local_cohortrole_get_contextlevel($modeid);
         // Check if roles are requested on category level.
         if ($contextlevel == CONTEXT_COURSECAT) {
