@@ -68,11 +68,12 @@ class summary_table extends \table_sql implements \renderable {
      * @return void
      */
     protected function init_sql() {
-        $fields = persistent::get_sql_fields('cr') . ', c.name AS cohort, r.shortname AS role';
+        $fields = persistent::get_sql_fields('cr') . ', c.name AS cohort, r.shortname AS role, cc.name as category';
 
         $from = '{' . persistent::TABLE . '} cr
-            JOIN {cohort} c ON c.id = cr.cohortid
-            JOIN {role} r ON r.id = cr.roleid';
+            JOIN {cohort} c ON c.id = cr.cohortid            
+            JOIN {role} r ON r.id = cr.roleid
+            LEFT JOIN {course_categories} cc ON cc.id = cr.categoryid';
 
         $this->set_sql($fields, $from, '1=1');
         $this->set_count_sql('SELECT COUNT(1) FROM ' . $from);
