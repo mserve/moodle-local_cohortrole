@@ -22,8 +22,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-define('LOCAL_COHORTROLE_MODE_SYSTEM', '0');
-define('LOCAL_COHORTROLE_MODE_CATEGORY', '1');
+define('LOCAL_COHORTROLE_MODE_SYSTEM',  0);
+define('LOCAL_COHORTROLE_MODE_CATEGORY', 1);
 define('LOCAL_COHORTROLE_ROLE_COMPONENT', 'local_cohortrole');
 
 /**
@@ -136,7 +136,7 @@ function local_cohortrole_get_context(int $categoryid) {
  * @return string
  * @throws coding_exception
  */
-function local_cohortrole_get_contextlevel_name($mode): string {
+function local_cohortrole_get_contextlevel_name(int $mode): string {
     switch ($mode) {
         case LOCAL_COHORTROLE_MODE_CATEGORY:
             return \context_coursecat::get_level_name();
@@ -148,11 +148,11 @@ function local_cohortrole_get_contextlevel_name($mode): string {
 /**
  * Returns the context level by the given mode.
  *
- * @param $mode
+ * @param int $mode
  * @return int
  * @throws coding_exception
  */
-function local_cohortrole_get_contextlevel($mode): string {
+function local_cohortrole_get_contextlevel(int $mode): int {
     switch ($mode) {
         case LOCAL_COHORTROLE_MODE_CATEGORY:
             return CONTEXT_COURSECAT;

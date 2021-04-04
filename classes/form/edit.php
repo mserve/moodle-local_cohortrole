@@ -34,7 +34,7 @@ class edit extends \core\form\persistent {
     protected static $persistentclass = persistent::class;
 
     /** @var array Fields to remove when getting the final data. */
-    protected static $fieldstoremove = array('submitbutton', 'modeid');
+    protected static $fieldstoremove = array('submitbutton', 'mode');
 
     /**
      * Form definition
@@ -44,25 +44,34 @@ class edit extends \core\form\persistent {
     protected function definition() {
         $mform = $this->_form;
 
-        $mode = $this->_customdata['modeid'];
+        // Mode field. Keep it as constant!
+        $mode = $this->_customdata['mode'];        
+        $mform->addElement('hidden', 'mode');
+        $mform->setType('mode', PARAM_INT);
+        $mform->setConstant('mode', $mode);
 
-        $mform->addElement('hidden', 'modeid', $mode);
-        $mform->setType('modeid', PARAM_INT);
-
+        // System-wide cohorts.
         $mform->addElement('select', 'cohortid', get_string('cohort', 'local_cohortrole'), self::get_cohorts());
         $mform->addRule('cohortid', get_string('required'), 'required', null, 'client');
         $mform->setType('cohortid', PARAM_INT);
         $mform->addHelpButton('cohortid', 'cohort', 'local_cohortrole');
 
+        // Roles supported in that mode.
         $mform->addElement('select', 'roleid', get_string('role', 'local_cohortrole'), self::get_roles($mode));
         $mform->addRule('roleid', get_string('required'), 'required', null, 'client');
         $mform->setType('roleid', PARAM_INT);
         $mform->addHelpButton('roleid', 'role', 'local_cohortrole');
 
-        $mform->addElement('select', 'categoryid', get_string('category', 'local_cohortrole'), self::get_categories());
-        $mform->setType('categoryid', PARAM_INT);
-        $mform->addHelpButton('categoryid', 'category', 'local_cohortrole');
-        $mform->hideIf('categoryid', 'modeid', 'eq', 0);
+        // Check if category field is needed. Set default value if in LOCAL_COHORTROLE_MODE_SYSTEM mode.
+        if ($mode == LOCAL_COHORTROLE_MODE_SYSTEM) {
+            $mform->addElement('hidden', 'categoryid');
+            $mform->setType('categoryid', PARAM_INT);
+            $mform->setConstant('categoryid', LOCAL_COHORTROLE_MODE_SYSTEM);
+        } else {
+            $mform->addElement('select', 'categoryid', get_string('category', 'local_cohortrole'), self::get_categories());
+            $mform->setType('categoryid', PARAM_INT);
+            $mform->addHelpButton('categoryid', 'category', 'local_cohortrole');            
+        }
 
         $this->add_action_buttons();
     }
@@ -76,10 +85,26 @@ class edit extends \core\form\persistent {
      * @return array
      */
     public function extra_validation($data, $files, array &$errors) {
+        
+        // Get mode.
+        $mode = $this->_customdata['mode'];       
+
+        // Assume category ID 0 by default if mode is LOCAL_COHORTROLE_MODE_SYSTEM and not given.
+        if ($mode == LOCAL_COHORTROLE_MODE_SYSTEM && !property_exists ($data, 'categoryid')) {
+            $data->categoryid = 0;
+        }
+
+        // Check if this assignment already exists.
         if ($this->get_persistent()->record_exists_select('cohortid = :cohortid AND roleid = :roleid AND categoryid = :categoryid',
             ['cohortid' => $data->cohortid, 'roleid' => $data->roleid, 'categoryid' => $data->categoryid])) {
 
             $errors['cohortid'] = get_string('errorexists', 'local_cohortrole');
+        }
+
+        // Validate if role is assignable in context - should not happen, but user may tamper arround with form data!
+        $roles = self::get_roles($mode);
+        if (!array_key_exists($data->roleid, $roles)) {
+            $errors['roleid'] = get_string('errorexists', 'local_cohortrole');
         }
 
         return $errors;
@@ -110,7 +135,7 @@ class edit extends \core\form\persistent {
     protected static function get_roles($modeid) {
         // Get context level for mode.
         $contextlevel = local_cohortrole_get_contextlevel($modeid);
-        // Check if roles are requested on category level.
+
         if ($contextlevel == CONTEXT_COURSECAT) {
             // Get roles assignable to default category.
             $roles = get_assignable_roles(\context_coursecat::instance(\core_course_category::get_default()->id), ROLENAME_ALIAS);
@@ -130,7 +155,7 @@ class edit extends \core\form\persistent {
      * @return array
      */
     protected static function get_categories() {
-        $categories = [0 => get_string('choosedots')] + \core_course_category::make_categories_list();
+        $categories = [-1 => get_string('choosedots')] + \core_course_category::make_categories_list();
 
         \core_collator::asort($categories, \core_collator::SORT_STRING);
 
