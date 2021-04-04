@@ -71,7 +71,7 @@ class summary_table extends \table_sql implements \renderable {
         $fields = persistent::get_sql_fields('cr') . ', c.name AS cohort, r.shortname AS role, cc.name as category';
 
         $from = '{' . persistent::TABLE . '} cr
-            JOIN {cohort} c ON c.id = cr.cohortid            
+            JOIN {cohort} c ON c.id = cr.cohortid
             JOIN {role} r ON r.id = cr.roleid
             LEFT JOIN {course_categories} cc ON cc.id = cr.categoryid';
 
@@ -122,8 +122,10 @@ class summary_table extends \table_sql implements \renderable {
      */
     public function col_role(\stdClass $record) {
         $persistent = new persistent(0, $record);
+        $url = new \moodle_url('/admin/roles/define.php', array('action' => 'view', 'roleid' => $persistent->get_role()->id));
 
-        return role_get_name($persistent->get_role(), \context_system::instance(), ROLENAME_ALIAS);
+        $context = local_cohortrole_get_context($persistent->get('categoryid'));
+        return \html_writer::link($url, role_get_name($persistent->get_role(), $context, ROLENAME_ALIAS));
     }
 
     /**
@@ -133,6 +135,8 @@ class summary_table extends \table_sql implements \renderable {
      * @return string
      */
     public function col_category(\stdClass $record) {
+        global $OUTPUT;
+
         if ($record->categoryid == LOCAL_COHORTROLE_MODE_SYSTEM) {
             return '';
         }
@@ -140,7 +144,8 @@ class summary_table extends \table_sql implements \renderable {
         $persistent = new persistent(0, $record);
         $categories  = \core_course_category::make_categories_list();
 
-        return format_string($categories[$persistent->get_category()->id], true, \context_system::instance());
+        $url = new \moodle_url('/course/management.php', array('categoryid' => $persistent->get_category()->id));
+        return \html_writer::link($url, format_string($categories[$persistent->get_category()->id], true, \context_system::instance()));
     }
 
     /**
